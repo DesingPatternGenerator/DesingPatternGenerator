@@ -2,7 +2,7 @@
 
 namespace ReenExe\DesignPatternGenerator;
 
-class DesignPatternGenerator
+class DecoratorGenerator extends Generator
 {
 
 }
