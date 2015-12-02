@@ -1,6 +1,6 @@
 <?php
 
-namespace ReenExe\Fixtures;
+namespace ReenExe\Fixtures\Source;
 
 class User
 {

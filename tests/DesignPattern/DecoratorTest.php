@@ -1,7 +1,7 @@
 <?php
 
 use ReenExe\DesignPatternGenerator\DecoratorGenerator;
-use ReenExe\Fixtures\User;
+use ReenExe\Fixtures\Source\User;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
