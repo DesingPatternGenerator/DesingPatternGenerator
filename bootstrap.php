@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 
 use Symfony\Component\Filesystem\Filesystem;
 
-$resultDirectory = __DIR__ . '/fixtures/Result';
+define('FIXTURE_RESULT_PATH', __DIR__ . '/fixtures/Result');
 $fs = new Filesystem();
-$fs->remove($resultDirectory);
-$fs->mkdir($resultDirectory, 0777);
+$fs->remove(FIXTURE_RESULT_PATH);
+$fs->mkdir(FIXTURE_RESULT_PATH, 0777);
