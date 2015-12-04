@@ -21,8 +21,9 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
             $generator->generate($classSource , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
         );
 
-        $result = new $classResult();
-        $this->assertTrue($result instanceof $classSource);
+        $this->assertTrue(is_subclass_of($classResult, $classSource));
+        $classResultInstance = new $classResult(new $classSource());
+        $this->assertTrue($classResultInstance instanceof $classSource);
     }
 
     public function dataProvider()
