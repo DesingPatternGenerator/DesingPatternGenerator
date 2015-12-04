@@ -3,19 +3,38 @@
 use ReenExe\DesignPatternGenerator\DecoratorGenerator;
 use ReenExe\Fixtures\Source\User;
 use ReenExe\Fixtures\Result\UserDecorator;
+use ReenExe\Fixtures\Source\UserStrict;
+use ReenExe\Fixtures\Result\UserStrictDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
-    public function test()
+    /**
+     * @dataProvider dataProvider
+     * @param $classSource
+     * @param $classResult
+     */
+    public function test($classSource, $classResult)
     {
         $generator = new DecoratorGenerator();
 
         $this->assertTrue(
-            $generator->generate(User::class , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
+            $generator->generate($classSource , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
         );
 
-        $result = new UserDecorator();
+        $result = new $classResult();
+        $this->assertTrue($result instanceof $classSource);
+    }
 
-        $this->assertTrue($result instanceof User);
+    public function dataProvider()
+    {
+        yield [
+            User::class,
+            UserDecorator::class,
+        ];
+
+        yield [
+            UserStrict::class,
+            UserStrictDecorator::class,
+        ];
     }
 }
