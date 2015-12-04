@@ -1,16 +1,23 @@
 <?php
 
 use ReenExe\DesignPatternGenerator\DecoratorGenerator;
+
 use ReenExe\Fixtures\Source\User;
-use ReenExe\Fixtures\Result\UserDecorator;
+use ReenExe\Fixtures\Result\Decorator\UserDecorator;
+
 use ReenExe\Fixtures\Source\UserStrict;
-use ReenExe\Fixtures\Result\UserStrictDecorator;
+use ReenExe\Fixtures\Result\Decorator\UserStrictDecorator;
+
 use ReenExe\Fixtures\Source\UserInterface;
-use ReenExe\Fixtures\Result\UserInterfaceDecorator;
+use ReenExe\Fixtures\Result\Decorator\UserInterfaceDecorator;
+
 use ReenExe\Fixtures\Source\AbstractUser;
-use ReenExe\Fixtures\Result\AbstractUserDecorator;
+use ReenExe\Fixtures\Result\Decorator\AbstractUserDecorator;
+
 use ReenExe\Fixtures\Source\FinalMethodEntity;
-use ReenExe\Fixtures\Result\FinalMethodEntityDecorator;
+use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
+
+use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +31,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $generator = new DecoratorGenerator();
 
         $this->assertTrue(
-            $generator->generate($classSource , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
+            $generator->generate(
+                $classSource ,
+                'ReenExe\Fixtures\Result\Decorator',
+                FIXTURE_RESULT_PATH . '/Decorator'
+            )
         );
 
         $this->assertTrue(is_subclass_of($classResult, $classSource));
@@ -73,6 +84,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         yield [
             FinalMethodEntity::class,
             FinalMethodEntityDecorator::class,
+        ];
+
+        yield [
+            DecoratorGenerator::class,
+            DecoratorGeneratorDecorator::class,
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace ReenExe\DesignPatternGenerator;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 abstract class Generator
 {
     protected $classTemplate = <<<'PHP'
@@ -28,7 +30,12 @@ PHP;
 
 PHP;
 
-
+    /**
+     * @param string $class
+     * @param string $namespace
+     * @param string $path
+     * @return bool
+     */
     abstract public function generate(string $class, string $namespace, string $path): bool;
 
     protected function getResultClassString(array $data): string
@@ -51,5 +58,12 @@ PHP;
     {
         $sourceClassNamespacePath = explode('\\', $class);
         return end($sourceClassNamespacePath);
+    }
+
+    protected function store($path, $resultClassName, $content)
+    {
+        $fs = new Filesystem();
+
+        $fs->dumpFile("$path/$resultClassName.php", $content);
     }
 }

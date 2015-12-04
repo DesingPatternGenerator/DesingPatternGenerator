@@ -2,14 +2,16 @@
 
 namespace ReenExe\DesignPatternGenerator;
 
-use Symfony\Component\Filesystem\Filesystem;
-
 class DecoratorGenerator extends Generator
 {
+    /**
+     * @param string $class
+     * @param string $namespace
+     * @param string $path
+     * @return bool
+     */
     public function generate(string $class, string $namespace, string $path): bool
     {
-        $fs = new Filesystem();
-
         $sourceClassName = $this->getSourceClassName($class);
         $resultClassName = $sourceClassName . 'Decorator';
 
@@ -70,7 +72,7 @@ class DecoratorGenerator extends Generator
             ':body:' => join(PHP_EOL, $methods),
         ]);
 
-        $fs->dumpFile("$path/$resultClassName.php", $result);
+        $this->store($path, $resultClassName, $result);
 
         return true;
     }
