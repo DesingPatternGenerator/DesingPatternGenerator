@@ -5,6 +5,8 @@ use ReenExe\Fixtures\Source\User;
 use ReenExe\Fixtures\Result\UserDecorator;
 use ReenExe\Fixtures\Source\UserStrict;
 use ReenExe\Fixtures\Result\UserStrictDecorator;
+use ReenExe\Fixtures\Source\UserInterface;
+use ReenExe\Fixtures\Result\UserInterfaceDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -52,6 +54,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         yield [
             UserStrict::class,
             UserStrictDecorator::class,
+        ];
+
+        yield [
+            UserInterface::class,
+            UserInterfaceDecorator::class,
         ];
     }
 }
