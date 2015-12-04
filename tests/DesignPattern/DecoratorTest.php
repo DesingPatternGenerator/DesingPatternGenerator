@@ -9,6 +9,8 @@ use ReenExe\Fixtures\Source\UserInterface;
 use ReenExe\Fixtures\Result\UserInterfaceDecorator;
 use ReenExe\Fixtures\Source\AbstractUser;
 use ReenExe\Fixtures\Result\AbstractUserDecorator;
+use ReenExe\Fixtures\Source\FinalMethodEntity;
+use ReenExe\Fixtures\Result\FinalMethodEntityDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -66,6 +68,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         yield [
             AbstractUser::class,
             AbstractUserDecorator::class,
+        ];
+
+        yield [
+            FinalMethodEntity::class,
+            FinalMethodEntityDecorator::class,
         ];
     }
 }
