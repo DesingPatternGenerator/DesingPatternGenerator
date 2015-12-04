@@ -26,9 +26,10 @@ class DecoratorGenerator extends Generator
         foreach ($reflection->getMethods() as $reflectionMethod) {
             if ($reflectionMethod->isConstructor()) continue;
 
+            $sourceModifiers = \Reflection::getModifierNames($reflectionMethod->getModifiers());
+
             $modifiers = join(
-                ' ',
-                \Reflection::getModifierNames($reflectionMethod->getModifiers())
+                ' ', array_diff($sourceModifiers, ['abstract'])
             );
 
             $parameters = [];
