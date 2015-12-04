@@ -52,10 +52,14 @@ class DecoratorGenerator extends Generator
             ]);
         }
 
+        $behavior = $reflection->isInterface()
+            ? 'implements'
+            : 'extends';
+
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':use:' => "use $class;",
-            ':header:' => "class $resultClassName extends $sourceClassName",
+            ':header:' => "class $resultClassName $behavior $sourceClassName",
             ':body:' => join(PHP_EOL, $methods),
         ]);
 
