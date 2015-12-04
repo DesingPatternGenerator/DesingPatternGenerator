@@ -27,6 +27,9 @@ class DecoratorGenerator extends Generator
             if ($reflectionMethod->isConstructor()) continue;
 
             $sourceModifiers = $reflectionMethod->getModifiers();
+
+            if ($sourceModifiers & \ReflectionMethod::IS_FINAL) continue;
+
             if ($sourceModifiers & \ReflectionMethod::IS_ABSTRACT) {
                 $sourceModifiers ^= \ReflectionMethod::IS_ABSTRACT;
             }
