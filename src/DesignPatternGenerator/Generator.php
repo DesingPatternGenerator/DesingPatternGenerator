@@ -38,7 +38,13 @@ PHP;
 
     protected function getResultMethodString(array $data): string
     {
-        return strtr($this->methodTemplate, $data);
+        static $default = [
+            ':comment:' => '',
+            ':body:' => '',
+            ':return:' => '',
+        ];
+
+        return strtr($this->methodTemplate, array_merge($default, $data));
     }
 
     protected function getSourceClassName(string $class)

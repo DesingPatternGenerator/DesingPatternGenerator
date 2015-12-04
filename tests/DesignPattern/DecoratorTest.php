@@ -22,8 +22,24 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertTrue(is_subclass_of($classResult, $classSource));
-        $classResultInstance = new $classResult(new $classSource());
-        $this->assertTrue($classResultInstance instanceof $classSource);
+
+        $reflectionResultClass = new \ReflectionClass($classResult);
+
+        $constructorReflectionMethod = $reflectionResultClass->getConstructor();
+
+        $this->assertTrue((bool) $constructorReflectionMethod);
+
+        $constructorReflectionParameters = $constructorReflectionMethod->getParameters();
+
+        $this->assertTrue(count($constructorReflectionParameters) === 1);
+        /* @var $constructorReflectionParameter \ReflectionParameter */
+        $constructorReflectionParameter = current($constructorReflectionParameters);
+
+        /* @var $constructorReflectionType \ReflectionType */
+        $constructorReflectionType = $constructorReflectionParameter->getType();
+        $this->assertTrue((bool) $constructorReflectionType);
+
+        $this->assertSame((string) $constructorReflectionType, $classSource);
     }
 
     public function dataProvider()

@@ -15,8 +15,17 @@ class DecoratorGenerator extends Generator
 
         $reflection = new \ReflectionClass($class);
 
-        $methods = [];
+        $methods = [
+            $this->getResultMethodString([
+                ':modifiers:' => 'public',
+                ':name:' => '__construct',
+                ':parameters:' => $sourceClassName . ' $instance',
+            ])
+        ];
+
         foreach ($reflection->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->isConstructor()) continue;
+
             $modifiers = join(
                 ' ',
                 \Reflection::getModifierNames($reflectionMethod->getModifiers())
@@ -38,7 +47,6 @@ class DecoratorGenerator extends Generator
                 ':comment:' => $reflectionMethod->getDocComment(),
                 ':modifiers:' => $modifiers,
                 ':name:' => $reflectionMethod->getName(),
-                ':body:' => '',
                 ':parameters:' => join(', ', $parameters),
                 ':return:' => $resultType,
             ]);
