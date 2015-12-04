@@ -26,9 +26,13 @@ class DecoratorGenerator extends Generator
         foreach ($reflection->getMethods() as $reflectionMethod) {
             if ($reflectionMethod->isConstructor()) continue;
 
+            /**
+             * TODO: Need use \ReflectionMethod::IS_ABSTRACT
+             */
+            $sourceModifiers = \Reflection::getModifierNames($reflectionMethod->getModifiers());
+
             $modifiers = join(
-                ' ',
-                \Reflection::getModifierNames($reflectionMethod->getModifiers())
+                ' ', array_diff($sourceModifiers, ['abstract'])
             );
 
             $parameters = [];
@@ -52,10 +56,14 @@ class DecoratorGenerator extends Generator
             ]);
         }
 
+        $behavior = $reflection->isInterface()
+            ? 'implements'
+            : 'extends';
+
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':use:' => "use $class;",
-            ':header:' => "class $resultClassName extends $sourceClassName",
+            ':header:' => "class $resultClassName $behavior $sourceClassName",
             ':body:' => join(PHP_EOL, $methods),
         ]);
 
