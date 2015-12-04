@@ -3,19 +3,55 @@
 use ReenExe\DesignPatternGenerator\DecoratorGenerator;
 use ReenExe\Fixtures\Source\User;
 use ReenExe\Fixtures\Result\UserDecorator;
+use ReenExe\Fixtures\Source\UserStrict;
+use ReenExe\Fixtures\Result\UserStrictDecorator;
 
 class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
-    public function test()
+    /**
+     * @dataProvider dataProvider
+     * @param $classSource
+     * @param $classResult
+     */
+    public function test($classSource, $classResult)
     {
         $generator = new DecoratorGenerator();
 
         $this->assertTrue(
-            $generator->generate(User::class , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
+            $generator->generate($classSource , 'ReenExe\Fixtures\Result', FIXTURE_RESULT_PATH)
         );
 
-        $result = new UserDecorator();
+        $this->assertTrue(is_subclass_of($classResult, $classSource));
 
-        $this->assertTrue($result instanceof User);
+        $reflectionResultClass = new \ReflectionClass($classResult);
+
+        $constructorReflectionMethod = $reflectionResultClass->getConstructor();
+
+        $this->assertTrue((bool) $constructorReflectionMethod);
+
+        $constructorReflectionParameters = $constructorReflectionMethod->getParameters();
+
+        $this->assertTrue(count($constructorReflectionParameters) === 1);
+        /* @var $constructorReflectionParameter \ReflectionParameter */
+        $constructorReflectionParameter = current($constructorReflectionParameters);
+
+        /* @var $constructorReflectionType \ReflectionType */
+        $constructorReflectionType = $constructorReflectionParameter->getType();
+        $this->assertTrue((bool) $constructorReflectionType);
+
+        $this->assertSame((string) $constructorReflectionType, $classSource);
+    }
+
+    public function dataProvider()
+    {
+        yield [
+            User::class,
+            UserDecorator::class,
+        ];
+
+        yield [
+            UserStrict::class,
+            UserStrictDecorator::class,
+        ];
     }
 }

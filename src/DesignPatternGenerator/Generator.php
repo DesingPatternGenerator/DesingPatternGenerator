@@ -4,7 +4,7 @@ namespace ReenExe\DesignPatternGenerator;
 
 abstract class Generator
 {
-    protected $template = <<<'PHP'
+    protected $classTemplate = <<<'PHP'
 <?php
 
 :namespace:
@@ -18,21 +18,33 @@ abstract class Generator
 
 PHP;
 
-    abstract public function generate(string $class, string $namespace, string $path): bool;
+    protected $methodTemplate = <<<'PHP'
 
-    protected function getResultString(array $data): string
+    :comment:
+    :modifiers: function :name:(:parameters:):return:
     {
-        $map = array_merge($this->getDefault(), $data);
-
-        return strtr($this->template, $map);
+        :body:
     }
 
-    protected function getDefault(): array
+PHP;
+
+
+    abstract public function generate(string $class, string $namespace, string $path): bool;
+
+    protected function getResultClassString(array $data): string
     {
-        return [
-            ':namespace:' => '',
-            ':use:' => '',
+        return strtr($this->classTemplate, $data);
+    }
+
+    protected function getResultMethodString(array $data): string
+    {
+        static $default = [
+            ':comment:' => '',
+            ':body:' => '',
+            ':return:' => '',
         ];
+
+        return strtr($this->methodTemplate, array_merge($default, $data));
     }
 
     protected function getSourceClassName(string $class)
