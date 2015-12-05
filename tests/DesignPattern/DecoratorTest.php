@@ -14,6 +14,9 @@ use ReenExe\Fixtures\Result\Decorator\UserInterfaceDecorator;
 use ReenExe\Fixtures\Source\AbstractUser;
 use ReenExe\Fixtures\Result\Decorator\AbstractUserDecorator;
 
+use ReenExe\Fixtures\Source\AllModifierClass;
+use ReenExe\Fixtures\Result\Decorator\AllModifierClassDecorator;
+
 use ReenExe\Fixtures\Source\FinalMethodEntity;
 use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
 
@@ -84,6 +87,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         yield [
             FinalMethodEntity::class,
             FinalMethodEntityDecorator::class,
+        ];
+
+        yield [
+            AllModifierClass::class,
+            AllModifierClassDecorator::class,
         ];
 
         yield [
