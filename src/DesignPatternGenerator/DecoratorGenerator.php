@@ -25,12 +25,13 @@ class DecoratorGenerator extends Generator
             ])
         ];
 
+        $excludeModifiers = \ReflectionMethod::IS_FINAL | \ReflectionMethod::IS_PRIVATE;
         foreach ($reflection->getMethods() as $reflectionMethod) {
             if ($reflectionMethod->isConstructor()) continue;
 
             $sourceModifiers = $reflectionMethod->getModifiers();
 
-            if ($sourceModifiers & \ReflectionMethod::IS_FINAL) continue;
+            if ($sourceModifiers & $excludeModifiers) continue;
 
             if ($sourceModifiers & \ReflectionMethod::IS_ABSTRACT) {
                 $sourceModifiers ^= \ReflectionMethod::IS_ABSTRACT;
