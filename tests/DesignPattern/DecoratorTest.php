@@ -120,7 +120,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
      */
     private function getOpenMethods(\ReflectionClass $reflectionClass)
     {
-        $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC);
+        $methods = $reflectionClass->getMethods($this->getCompareModifiers());
 
         $result = [];
 
@@ -142,5 +142,20 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     private function assertSameMethods(array $source, array $expected)
     {
         $this->assertSame(array_keys($source), array_keys($expected));
+
+        $compareModifiers = $this->getCompareModifiers();
+        foreach ($source as $methodName => $sourceMethod) {
+            $expectedMethod = $expected[$methodName];
+
+            $this->assertSame(
+                $sourceMethod->getModifiers() & $compareModifiers,
+                $expectedMethod->getModifiers() & $compareModifiers
+            );
+        }
+    }
+
+    private function getCompareModifiers()
+    {
+        return \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC;
     }
 }
