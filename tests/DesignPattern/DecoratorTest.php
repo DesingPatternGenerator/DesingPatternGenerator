@@ -20,6 +20,12 @@ use ReenExe\Fixtures\Result\Decorator\AllModifierClassDecorator;
 use ReenExe\Fixtures\Source\FinalMethodEntity;
 use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
 
+use ReenExe\Fixtures\Source\ParameterDefaultValue;
+use ReenExe\Fixtures\Result\Decorator\ParameterDefaultValueDecorator;
+
+use ReenExe\Fixtures\Source\VariadicParameterClass;
+use ReenExe\Fixtures\Result\Decorator\VariadicParameterClassDecorator;
+
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
 class DecoratorTest extends PHPUnit_Framework_TestCase
@@ -105,6 +111,21 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
         ];
 
         yield [
+            ParameterDefaultValue::class,
+            ParameterDefaultValueDecorator::class,
+        ];
+
+        yield [
+            ParameterDefaultValue::class,
+            ParameterDefaultValueDecorator::class,
+        ];
+
+        yield [
+            VariadicParameterClass::class,
+            VariadicParameterClassDecorator::class,
+        ];
+
+        yield [
             DecoratorGenerator::class,
             DecoratorGeneratorDecorator::class,
         ];
@@ -186,6 +207,18 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
             $source->getType(),
             $expected->getType()
         );
+
+        $this->assertSame(
+            $source->isDefaultValueAvailable(),
+            $expected->isDefaultValueAvailable()
+        );
+
+        if ($source->isDefaultValueAvailable()) {
+            $this->assertSame(
+                $source->getDefaultValue(),
+                $expected->getDefaultValue()
+            );
+        }
     }
 
     /**
