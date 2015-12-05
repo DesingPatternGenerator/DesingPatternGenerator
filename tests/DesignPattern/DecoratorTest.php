@@ -132,6 +132,8 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
                 $expectedMethod->getModifiers() & $compareModifiers
             );
 
+            $this->assertSameReturnType($sourceMethod, $expectedMethod);
+
             $this->assertSameParameters($sourceMethod, $expectedMethod);
         }
     }
@@ -157,6 +159,22 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     private function assertSameKeys(array $source, array $expected)
     {
         $this->assertSame(array_keys($source), array_keys($expected));
+    }
+
+    private function assertSameReturnType(
+        \ReflectionMethod $sourceMethod,
+        \ReflectionMethod $expectedMethod
+    ) {
+        /* @var $sourceReturnType \ReflectionType */
+        $sourceReturnType = $sourceMethod->getReturnType();
+        /* @var $expectReturnType \ReflectionType */
+        $expectReturnType = $expectedMethod->getReturnType();
+
+        $this->assertTrue(
+            ($sourceReturnType === null && $expectReturnType === null)
+                ||
+            ((string)$sourceReturnType === (string)$expectReturnType)
+        );
     }
 
     /**
