@@ -23,6 +23,9 @@ use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
 use ReenExe\Fixtures\Source\ParameterDefaultValue;
 use ReenExe\Fixtures\Result\Decorator\ParameterDefaultValueDecorator;
 
+use ReenExe\Fixtures\Source\VariadicParameterClass;
+use ReenExe\Fixtures\Result\Decorator\VariadicParameterClassDecorator;
+
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
 class DecoratorTest extends PHPUnit_Framework_TestCase
@@ -110,6 +113,16 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
         yield [
             ParameterDefaultValue::class,
             ParameterDefaultValueDecorator::class,
+        ];
+
+        yield [
+            ParameterDefaultValue::class,
+            ParameterDefaultValueDecorator::class,
+        ];
+
+        yield [
+            VariadicParameterClass::class,
+            VariadicParameterClassDecorator::class,
         ];
 
         yield [

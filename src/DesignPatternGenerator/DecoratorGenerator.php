@@ -43,10 +43,19 @@ class DecoratorGenerator extends Generator
 
             $parameters = [];
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $name = '$' . $reflectionParameter->getName();
-                $parameter = $reflectionParameter->getType()
-                    ? "{$reflectionParameter->getType()} $name"
-                    : $name;
+                $settings = [];
+
+                if ($reflectionParameter->getType()) {
+                    $settings[] = $reflectionParameter->getType();
+                }
+
+                if ($reflectionParameter->isVariadic()) {
+                    $settings[] = '...';
+                }
+
+                $settings[] = $name = '$' . $reflectionParameter->getName();
+
+                $parameter = implode(' ', $settings);
 
                 if ($reflectionParameter->isDefaultValueAvailable()) {
                     $parameter .= " = '{$reflectionParameter->getDefaultValue()}'";
