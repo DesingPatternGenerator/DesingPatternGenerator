@@ -26,26 +26,29 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider dataProvider
-     * @param $classSource
-     * @param $classResult
+     * @param $sourceClassName
+     * @param $resultClassName
      */
-    public function test($classSource, $classResult)
+    public function test($sourceClassName, $resultClassName)
     {
         $generator = new DecoratorGenerator();
 
         $this->assertTrue(
             $generator->generate(
-                $classSource ,
+                $sourceClassName ,
                 'ReenExe\Fixtures\Result\Decorator',
                 FIXTURE_RESULT_PATH . '/Decorator'
             )
         );
 
-        $this->assertTrue(class_exists($classResult));
-        $this->assertTrue(is_subclass_of($classResult, $classSource));
+        $this->assertTrue(class_exists($resultClassName));
+        $this->assertTrue(is_subclass_of($resultClassName, $sourceClassName));
 
-        $reflectionResultClass = new \ReflectionClass($classResult);
+        $reflectionResultClass = new \ReflectionClass($resultClassName);
 
+        /**
+         * Section: Assert same constructor parameter
+         */
         $constructorReflectionMethod = $reflectionResultClass->getConstructor();
 
         $this->assertTrue((bool) $constructorReflectionMethod);
@@ -60,7 +63,17 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $constructorReflectionType = $constructorReflectionParameter->getType();
         $this->assertTrue((bool) $constructorReflectionType);
 
-        $this->assertSame((string) $constructorReflectionType, $classSource);
+        $this->assertSame((string) $constructorReflectionType, $sourceClassName);
+
+        /**
+         * Section: Assert same public and protected methods
+         */
+        $reflectionSourceClass = new \ReflectionClass($sourceClassName);
+
+        $sourceClassMethods = $this->getOpenMethods($reflectionSourceClass);
+        $resultClassMethods = $this->getOpenMethods($reflectionResultClass);
+
+        $this->assertSameMethods($sourceClassMethods, $resultClassMethods);
     }
 
     public function dataProvider()
@@ -99,5 +112,35 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
             DecoratorGenerator::class,
             DecoratorGeneratorDecorator::class,
         ];
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     * @return \ReflectionMethod[]
+     */
+    private function getOpenMethods(\ReflectionClass $reflectionClass)
+    {
+        $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC);
+
+        $result = [];
+
+        foreach ($methods as $method) {
+            if ($method->isConstructor()) continue;
+
+            $result[$method->getName()] = $method;
+        }
+
+        ksort($result);
+
+        return $result;
+    }
+
+    /**
+     * @param \ReflectionMethod[] $source
+     * @param \ReflectionMethod[] $expected
+     */
+    private function assertSameMethods(array $source, array $expected)
+    {
+        $this->assertSame(array_keys($source), array_keys($expected));
     }
 }
