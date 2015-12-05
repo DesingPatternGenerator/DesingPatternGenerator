@@ -69,11 +69,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
          * Section: Assert same public and protected methods
          */
         $reflectionSourceClass = new \ReflectionClass($sourceClassName);
-
-        $sourceClassMethods = $this->getOpenMethods($reflectionSourceClass);
-        $resultClassMethods = $this->getOpenMethods($reflectionResultClass);
-
-        $this->assertSameMethods($sourceClassMethods, $resultClassMethods);
+        $this->assertSameMethods($reflectionSourceClass, $reflectionResultClass);
     }
 
     public function dataProvider()
@@ -115,43 +111,84 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
-     * @return \ReflectionMethod[]
+     * @param ReflectionClass $reflectionSourceClass
+     * @param ReflectionClass $reflectionResultClass
      */
-    private function getOpenMethods(\ReflectionClass $reflectionClass)
-    {
-        $methods = $reflectionClass->getMethods($this->getCompareModifiers());
+    private function assertSameMethods(
+        \ReflectionClass $reflectionSourceClass,
+        \ReflectionClass $reflectionResultClass
+    ) {
+        $sourceClassMethods = $this->getReflectionMethodMap($reflectionSourceClass);
+        $resultClassMethods = $this->getReflectionMethodMap($reflectionResultClass);
 
-        $result = [];
-
-        foreach ($methods as $method) {
-            if ($method->isConstructor()) continue;
-
-            $result[$method->getName()] = $method;
-        }
-
-        ksort($result);
-
-        return $result;
-    }
-
-    /**
-     * @param \ReflectionMethod[] $source
-     * @param \ReflectionMethod[] $expected
-     */
-    private function assertSameMethods(array $source, array $expected)
-    {
-        $this->assertSame(array_keys($source), array_keys($expected));
+        $this->assertSameKeys($sourceClassMethods, $resultClassMethods);
 
         $compareModifiers = $this->getCompareModifiers();
-        foreach ($source as $methodName => $sourceMethod) {
-            $expectedMethod = $expected[$methodName];
+        foreach ($sourceClassMethods as $methodName => $sourceMethod) {
+            $expectedMethod = $resultClassMethods[$methodName];
 
             $this->assertSame(
                 $sourceMethod->getModifiers() & $compareModifiers,
                 $expectedMethod->getModifiers() & $compareModifiers
             );
+
+            $this->assertSameParameters($sourceMethod, $expectedMethod);
         }
+    }
+
+    /**
+     * @param ReflectionMethod $sourceMethod
+     * @param ReflectionMethod $expectedMethod
+     */
+    private function assertSameParameters(
+        \ReflectionMethod $sourceMethod,
+        \ReflectionMethod $expectedMethod
+    ) {
+        $sourceMethodParameterMap = $this->getReflectionParameterMap($sourceMethod);
+        $expectedMethodParameterMap = $this->getReflectionParameterMap($expectedMethod);
+
+        $this->assertSameKeys($sourceMethodParameterMap, $expectedMethodParameterMap);
+    }
+
+    /**
+     * @param array $source
+     * @param array $expected
+     */
+    private function assertSameKeys(array $source, array $expected)
+    {
+        $this->assertSame(array_keys($source), array_keys($expected));
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     * @return \ReflectionMethod[]
+     */
+    private function getReflectionMethodMap(\ReflectionClass $reflectionClass)
+    {
+        $methods = $reflectionClass->getMethods($this->getCompareModifiers());
+
+        $map = [];
+
+        foreach ($methods as $method) {
+            if ($method->isConstructor()) continue;
+
+            $map[$method->getName()] = $method;
+        }
+
+        ksort($map);
+
+        return $map;
+    }
+
+    private function getReflectionParameterMap(\ReflectionMethod $method)
+    {
+        $map = [];
+
+        foreach ($method->getParameters() as $parameter) {
+            $map[$parameter->getName()] = $parameter;
+        }
+
+        return $map;
     }
 
     private function getCompareModifiers()
