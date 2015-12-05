@@ -20,6 +20,9 @@ use ReenExe\Fixtures\Result\Decorator\AllModifierClassDecorator;
 use ReenExe\Fixtures\Source\FinalMethodEntity;
 use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
 
+use ReenExe\Fixtures\Source\ParameterDefaultValue;
+use ReenExe\Fixtures\Result\Decorator\ParameterDefaultValueDecorator;
+
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
 class DecoratorTest extends PHPUnit_Framework_TestCase
@@ -102,6 +105,11 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
         yield [
             AllModifierClass::class,
             AllModifierClassDecorator::class,
+        ];
+
+        yield [
+            ParameterDefaultValue::class,
+            ParameterDefaultValueDecorator::class,
         ];
 
         yield [
