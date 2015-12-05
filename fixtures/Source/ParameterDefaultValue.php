@@ -1,6 +1,6 @@
 <?php
 
-namespace ReenExe\fixtures\Source;
+namespace ReenExe\Fixtures\Source;
 
 class ParameterDefaultValue
 {

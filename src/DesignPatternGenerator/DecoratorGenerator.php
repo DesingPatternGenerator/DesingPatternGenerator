@@ -80,7 +80,7 @@ class DecoratorGenerator extends Generator
         $settings = [];
 
         if ($class = $reflectionParameter->getClass()) {
-            $settings[] = '\\' . $class->getName();
+            $settings[] = $class->getShortName();
         } elseif ($reflectionParameter->getType()) {
             $settings[] = $reflectionParameter->getType();
         }
