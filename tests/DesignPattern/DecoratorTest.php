@@ -22,7 +22,7 @@ use ReenExe\Fixtures\Result\Decorator\FinalMethodEntityDecorator;
 
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
-class DecoratorTest extends \PHPUnit_Framework_TestCase
+class DecoratorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider dataProvider
@@ -44,7 +44,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(class_exists($resultClassName));
         $this->assertTrue(is_subclass_of($resultClassName, $sourceClassName));
 
-        $reflectionResultClass = new \ReflectionClass($resultClassName);
+        $reflectionResultClass = new ReflectionClass($resultClassName);
 
         /**
          * Section: Assert same constructor parameter
@@ -56,10 +56,10 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $constructorReflectionParameters = $constructorReflectionMethod->getParameters();
 
         $this->assertTrue(count($constructorReflectionParameters) === 1);
-        /* @var $constructorReflectionParameter \ReflectionParameter */
+        /* @var $constructorReflectionParameter ReflectionParameter */
         $constructorReflectionParameter = current($constructorReflectionParameters);
 
-        /* @var $constructorReflectionType \ReflectionType */
+        /* @var $constructorReflectionType ReflectionType */
         $constructorReflectionType = $constructorReflectionParameter->getType();
         $this->assertTrue((bool) $constructorReflectionType);
 
@@ -68,7 +68,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         /**
          * Section: Assert same public and protected methods
          */
-        $reflectionSourceClass = new \ReflectionClass($sourceClassName);
+        $reflectionSourceClass = new ReflectionClass($sourceClassName);
         $this->assertSameMethods($reflectionSourceClass, $reflectionResultClass);
     }
 
@@ -115,8 +115,8 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
      * @param ReflectionClass $reflectionResultClass
      */
     private function assertSameMethods(
-        \ReflectionClass $reflectionSourceClass,
-        \ReflectionClass $reflectionResultClass
+        ReflectionClass $reflectionSourceClass,
+        ReflectionClass $reflectionResultClass
     ) {
         $sourceClassMethods = $this->getReflectionMethodMap($reflectionSourceClass);
         $resultClassMethods = $this->getReflectionMethodMap($reflectionResultClass);
@@ -132,7 +132,10 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
                 $expectedMethod->getModifiers() & $compareModifiers
             );
 
-            $this->assertSameReturnType($sourceMethod, $expectedMethod);
+            $this->assertSameReflectionType(
+                $sourceMethod->getReturnType(),
+                $expectedMethod->getReturnType()
+            );
 
             $this->assertSameParameters($sourceMethod, $expectedMethod);
         }
@@ -143,13 +146,24 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
      * @param ReflectionMethod $expectedMethod
      */
     private function assertSameParameters(
-        \ReflectionMethod $sourceMethod,
-        \ReflectionMethod $expectedMethod
+        ReflectionMethod $sourceMethod,
+        ReflectionMethod $expectedMethod
     ) {
         $sourceMethodParameterMap = $this->getReflectionParameterMap($sourceMethod);
         $expectedMethodParameterMap = $this->getReflectionParameterMap($expectedMethod);
 
         $this->assertSameKeys($sourceMethodParameterMap, $expectedMethodParameterMap);
+
+        /**
+         * Short example of same logic
+            array_map([$this, 'assertSameParameter'], $sourceMethodParameterMap, $expectedMethodParameterMap);
+         */
+
+        foreach ($sourceMethodParameterMap as $name => $sourceParameter) {
+            $expectParameter = $expectedMethodParameterMap[$name];
+
+            $this->assertSameParameter($sourceParameter, $expectParameter);
+        }
     }
 
     /**
@@ -161,27 +175,37 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array_keys($source), array_keys($expected));
     }
 
-    private function assertSameReturnType(
-        \ReflectionMethod $sourceMethod,
-        \ReflectionMethod $expectedMethod
-    ) {
-        /* @var $sourceReturnType \ReflectionType */
-        $sourceReturnType = $sourceMethod->getReturnType();
-        /* @var $expectReturnType \ReflectionType */
-        $expectReturnType = $expectedMethod->getReturnType();
+    private function assertSameParameter(ReflectionParameter $source, ReflectionParameter $expected)
+    {
+        $this->assertSame(
+            $source->getName(),
+            $expected->getName()
+        );
 
+        $this->assertSameReflectionType(
+            $source->getType(),
+            $expected->getType()
+        );
+    }
+
+    /**
+     * @param ReflectionType|null $source
+     * @param ReflectionType|null $expected
+     */
+    private function assertSameReflectionType($source, $expected)
+    {
         $this->assertTrue(
-            ($sourceReturnType === null && $expectReturnType === null)
-                ||
-            ((string)$sourceReturnType === (string)$expectReturnType)
+            ($source === null && $expected === null)
+            ||
+            ((string)$source === (string)$expected)
         );
     }
 
     /**
      * @param ReflectionClass $reflectionClass
-     * @return \ReflectionMethod[]
+     * @return ReflectionMethod[]
      */
-    private function getReflectionMethodMap(\ReflectionClass $reflectionClass)
+    private function getReflectionMethodMap(ReflectionClass $reflectionClass)
     {
         $methods = $reflectionClass->getMethods($this->getCompareModifiers());
 
@@ -198,7 +222,11 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
         return $map;
     }
 
-    private function getReflectionParameterMap(\ReflectionMethod $method)
+    /**
+     * @param ReflectionMethod $method
+     * @return ReflectionParameter[]
+     */
+    private function getReflectionParameterMap(ReflectionMethod $method)
     {
         $map = [];
 
@@ -211,6 +239,6 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
 
     private function getCompareModifiers()
     {
-        return \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC;
+        return ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_PUBLIC;
     }
 }
