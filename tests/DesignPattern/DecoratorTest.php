@@ -41,6 +41,7 @@ class DecoratorTest extends \PHPUnit_Framework_TestCase
             )
         );
 
+        $this->assertTrue(class_exists($classResult));
         $this->assertTrue(is_subclass_of($classResult, $classSource));
 
         $reflectionResultClass = new \ReflectionClass($classResult);
