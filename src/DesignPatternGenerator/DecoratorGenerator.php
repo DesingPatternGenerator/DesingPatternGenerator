@@ -41,28 +41,10 @@ class DecoratorGenerator extends Generator
                 ' ', \Reflection::getModifierNames($sourceModifiers)
             );
 
-            $parameters = [];
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $settings = [];
-
-                if ($reflectionParameter->getType()) {
-                    $settings[] = $reflectionParameter->getType();
-                }
-
-                if ($reflectionParameter->isVariadic()) {
-                    $settings[] = '...';
-                }
-
-                $settings[] = $name = '$' . $reflectionParameter->getName();
-
-                $parameter = implode(' ', $settings);
-
-                if ($reflectionParameter->isDefaultValueAvailable()) {
-                    $parameter .= " = '{$reflectionParameter->getDefaultValue()}'";
-                }
-
-                $parameters[] = $parameter;
-            }
+            $parameters = array_map(
+                [$this, 'getMethodParameter'],
+                $reflectionMethod->getParameters()
+            );
 
             $resultType = $reflectionMethod->getReturnType()
                 ? ":{$reflectionMethod->getReturnType()}"
@@ -91,5 +73,30 @@ class DecoratorGenerator extends Generator
         $this->store($path, $resultClassName, $result);
 
         return true;
+    }
+
+    private function getMethodParameter(\ReflectionParameter $reflectionParameter)
+    {
+        $settings = [];
+
+        if ($class = $reflectionParameter->getClass()) {
+            $settings[] = '\\' . $class->getName();
+        } elseif ($reflectionParameter->getType()) {
+            $settings[] = $reflectionParameter->getType();
+        }
+
+        if ($reflectionParameter->isVariadic()) {
+            $settings[] = '...';
+        }
+
+        $settings[] = $name = '$' . $reflectionParameter->getName();
+
+        $parameter = implode(' ', $settings);
+
+        if ($reflectionParameter->isDefaultValueAvailable()) {
+            $parameter .= " = '{$reflectionParameter->getDefaultValue()}'";
+        }
+
+        return $parameter;
     }
 }
