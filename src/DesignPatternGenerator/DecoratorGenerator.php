@@ -19,6 +19,10 @@ class DecoratorGenerator extends Generator
 
         $reflection = new \ReflectionClass($class);
 
+        if ($reflection->isFinal()) {
+            return false;
+        }
+
         $methods = array_merge(
             [
                 $this->getResultMethodString([

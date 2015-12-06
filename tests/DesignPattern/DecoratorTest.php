@@ -32,6 +32,8 @@ use ReenExe\Fixtures\Result\Decorator\VariadicParameterClassDecorator;
 
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
+use ReenExe\Fixtures\Source\FinalClass;
+
 class DecoratorTest extends AbstractReflectionTest
 {
     /**
@@ -66,6 +68,19 @@ class DecoratorTest extends AbstractReflectionTest
          */
         $sourceReflectionClass = new ReflectionClass($sourceClassName);
         $this->assertSameMethods($sourceReflectionClass, $resultReflectionClass);
+    }
+
+    public function testFinalClass()
+    {
+        $generator = new DecoratorGenerator();
+
+        $this->assertFalse(
+            $generator->generate([
+                'class' => FinalClass::class,
+                'namespace' => 'ReenExe\Fixtures\Result\Decorator',
+                'path' => FIXTURE_RESULT_PATH . '/Decorator',
+            ])
+        );
     }
 
     public function dataProvider()
