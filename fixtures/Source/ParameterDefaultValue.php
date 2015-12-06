@@ -23,4 +23,14 @@ class ParameterDefaultValue
     {
 
     }
+
+    public function reference($reference = null)
+    {
+
+    }
+
+    public function is($rigth = true, $left = false)
+    {
+
+    }
 }
