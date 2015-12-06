@@ -102,11 +102,10 @@ PHP;
         $settings = [];
 
         if ($class = $reflectionParameter->getClass()) {
-            if ($class->isInternal()) {
-                $settings[] = '\\' . $class->getName();
-            } else {
-                $settings[] = $class->getShortName();
-            }
+            $settings[] = $class->isInternal()
+                ? '\\' . $class->getName()
+                : $class->getShortName();
+
         } elseif ($reflectionParameter->getType()) {
             $settings[] = $reflectionParameter->getType();
         }
