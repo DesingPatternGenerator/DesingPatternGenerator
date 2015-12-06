@@ -26,14 +26,6 @@ class AdapterGenerator extends Generator
             "use $adapter;",
         ]);
 
-        $methods = [
-            $this->getResultMethodString([
-                ':modifiers:' => 'public',
-                ':name:' => '__construct',
-                ':parameters:' => $sourceClassName . ' $instance',
-            ])
-        ];
-
         $methods = array_merge(
             [
                 $this->getResultMethodString([
@@ -45,14 +37,10 @@ class AdapterGenerator extends Generator
             $this->getClassMethods($adapterReflection)
         );
 
-        $behavior = $adapterReflection->isInterface()
-            ? 'implements'
-            : 'extends';
-
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':use:' => $use,
-            ':header:' => "class $resultClassName $behavior $adapterClassName",
+            ':header:' => "class $resultClassName {$this->getBehavior($adapterReflection)} $adapterClassName",
             ':body:' => join(PHP_EOL, $methods),
         ]);
 

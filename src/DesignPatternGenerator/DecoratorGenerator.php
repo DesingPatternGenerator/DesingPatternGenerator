@@ -30,14 +30,10 @@ class DecoratorGenerator extends Generator
             $this->getClassMethods($reflection)
         );
 
-        $behavior = $reflection->isInterface()
-            ? 'implements'
-            : 'extends';
-
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':use:' => "use $class;",
-            ':header:' => "class $resultClassName $behavior $sourceClassName",
+            ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
             ':body:' => join(PHP_EOL, $methods),
         ]);
 
