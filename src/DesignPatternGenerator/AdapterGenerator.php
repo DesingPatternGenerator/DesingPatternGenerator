@@ -16,10 +16,10 @@ class AdapterGenerator extends Generator
         $path = $settings['path'];
 
         $sourceClassName = $this->getSourceClassName($class);
-        $adapterClassName = $this->getSourceClassName($adapter);
         $resultClassName = $sourceClassName . 'Adapter';
 
         $adapterReflection = new \ReflectionClass($adapter);
+        $adapterClassName = $adapterReflection->getShortName();
 
         $use = join(PHP_EOL, [
             "use $class;",

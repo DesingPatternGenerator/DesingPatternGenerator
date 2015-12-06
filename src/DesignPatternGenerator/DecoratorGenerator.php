@@ -14,14 +14,14 @@ class DecoratorGenerator extends Generator
         $namespace = $settings['namespace'];
         $path = $settings['path'];
 
-        $sourceClassName = $this->getSourceClassName($class);
-        $resultClassName = $sourceClassName . 'Decorator';
-
         $reflection = new \ReflectionClass($class);
 
         if ($reflection->isFinal()) {
             return false;
         }
+
+        $sourceClassName = $reflection->getShortName();
+        $resultClassName = $sourceClassName . 'Decorator';
 
         $methods = array_merge(
             [
