@@ -40,11 +40,11 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
         $generator = new DecoratorGenerator();
 
         $this->assertTrue(
-            $generator->generate(
-                $sourceClassName ,
-                'ReenExe\Fixtures\Result\Decorator',
-                FIXTURE_RESULT_PATH . '/Decorator'
-            )
+            $generator->generate([
+                'class' => $sourceClassName,
+                'namespace' => 'ReenExe\Fixtures\Result\Decorator',
+                'path' => FIXTURE_RESULT_PATH . '/Decorator',
+            ])
         );
 
         $this->assertTrue(class_exists($resultClassName));

@@ -30,12 +30,10 @@ PHP;
 PHP;
 
     /**
-     * @param string $class
-     * @param string $namespace
-     * @param string $path
+     * @param array $settings
      * @return bool
      */
-    abstract public function generate(string $class, string $namespace, string $path): bool;
+    abstract public function generate(array $settings): bool;
 
     protected function getResultClassString(array $data): string
     {
@@ -57,6 +55,96 @@ PHP;
     {
         $sourceClassNamespacePath = explode('\\', $class);
         return end($sourceClassNamespacePath);
+    }
+
+    protected function getClassMethods(\ReflectionClass $class)
+    {
+        $excludeModifiers = \ReflectionMethod::IS_FINAL | \ReflectionMethod::IS_PRIVATE;
+
+        $methods = [];
+        foreach ($class->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->isConstructor()) continue;
+
+            $sourceModifiers = $reflectionMethod->getModifiers();
+
+            if ($sourceModifiers & $excludeModifiers) continue;
+
+            if ($sourceModifiers & \ReflectionMethod::IS_ABSTRACT) {
+                $sourceModifiers ^= \ReflectionMethod::IS_ABSTRACT;
+            }
+
+            $modifiers = join(
+                ' ', \Reflection::getModifierNames($sourceModifiers)
+            );
+
+            $parameters = array_map(
+                [$this, 'getMethodParameter'],
+                $reflectionMethod->getParameters()
+            );
+
+            $resultType = $reflectionMethod->getReturnType()
+                ? ":{$reflectionMethod->getReturnType()}"
+                : '';
+
+            $methods[] = $this->getResultMethodString([
+                ':comment:' => $reflectionMethod->getDocComment(),
+                ':modifiers:' => $modifiers,
+                ':name:' => $reflectionMethod->getName(),
+                ':parameters:' => join(', ', $parameters),
+                ':return:' => $resultType,
+            ]);
+        }
+        return $methods;
+    }
+
+    protected function getMethodParameter(\ReflectionParameter $reflectionParameter)
+    {
+        $settings = [];
+
+        if ($class = $reflectionParameter->getClass()) {
+            if ($class->isInternal()) {
+                $settings[] = '\\' . $class->getName();
+            } else {
+                $settings[] = $class->getShortName();
+            }
+        } elseif ($reflectionParameter->getType()) {
+            $settings[] = $reflectionParameter->getType();
+        }
+
+        if ($reflectionParameter->isVariadic()) {
+            $settings[] = '...';
+        }
+
+        $settings[] = $name = '$' . $reflectionParameter->getName();
+
+        $parameter = implode(' ', $settings);
+
+        if ($reflectionParameter->isDefaultValueAvailable()) {
+            $parameter .= " = {$this->getParameterDefaultValue($reflectionParameter)}";
+        }
+
+        return $parameter;
+    }
+
+    protected function getParameterDefaultValue(\ReflectionParameter $parameter)
+    {
+        if ($parameter->isDefaultValueConstant()) {
+            return '\\' . $parameter->getDefaultValueConstantName();
+        }
+
+        $value = $parameter->getDefaultValue();
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            return "'$value'";
+        }
+
+        if (is_array($value)) {
+            return '[]';
+        }
     }
 
     protected function store($path, $resultClassName, $content)
