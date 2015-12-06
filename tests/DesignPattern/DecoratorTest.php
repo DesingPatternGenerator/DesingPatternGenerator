@@ -218,6 +218,18 @@ class DecoratorTest extends PHPUnit_Framework_TestCase
                 $source->getDefaultValue(),
                 $expected->getDefaultValue()
             );
+
+            $this->assertSame(
+                $source->isDefaultValueConstant(),
+                $expected->isDefaultValueConstant()
+            );
+
+            if ($source->isDefaultValueConstant()) {
+                $this->assertSame(
+                    $source->getDefaultValueConstantName(),
+                    $expected->getDefaultValueConstantName()
+                );
+            }
         }
     }
 

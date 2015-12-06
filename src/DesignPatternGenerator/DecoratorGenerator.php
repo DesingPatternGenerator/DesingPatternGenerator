@@ -94,9 +94,30 @@ class DecoratorGenerator extends Generator
         $parameter = implode(' ', $settings);
 
         if ($reflectionParameter->isDefaultValueAvailable()) {
-            $parameter .= " = '{$reflectionParameter->getDefaultValue()}'";
+            $parameter .= " = {$this->getParameterDefaulValue($reflectionParameter)}";
         }
 
         return $parameter;
+    }
+
+    private function getParameterDefaulValue(\ReflectionParameter $parameter)
+    {
+        if ($parameter->isDefaultValueConstant()) {
+            return '\\' . $parameter->getDefaultValueConstantName();
+        }
+
+        $value = $parameter->getDefaultValue();
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            return "'$value'";
+        }
+
+        if (is_array($value)) {
+            return '[]';
+        }
     }
 }
