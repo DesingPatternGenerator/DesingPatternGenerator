@@ -144,6 +144,14 @@ PHP;
         if (is_array($value)) {
             return '[]';
         }
+
+        if (is_null($value)) {
+            return 'null';
+        }
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
     }
 
     protected function getBehavior(\ReflectionClass $class)
