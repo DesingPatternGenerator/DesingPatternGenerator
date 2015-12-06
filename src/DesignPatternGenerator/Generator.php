@@ -146,6 +146,11 @@ PHP;
         }
     }
 
+    protected function getBehavior(\ReflectionClass $class)
+    {
+        return $class->isInterface() ? 'implements' : 'extends';
+    }
+
     protected function store($path, $resultClassName, $content)
     {
         $fs = new Filesystem();
