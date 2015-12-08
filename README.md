@@ -5,5 +5,5 @@
 ### TODO
 * Config in YAML
 * Write reflection core
-* Decorator
 * NullObject
+* Factory Method
