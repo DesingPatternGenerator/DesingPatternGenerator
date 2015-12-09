@@ -23,6 +23,12 @@ class DecoratorGenerator extends Generator
         $sourceClassName = $reflection->getShortName();
         $resultClassName = $sourceClassName . 'Decorator';
 
+        $sourceClassMethods = $this->getClassMethods($reflection);
+
+        if (empty($sourceClassMethods)) {
+            return false;
+        }
+
         $methods = array_merge(
             [
                 $this->getResultMethodString([
@@ -31,7 +37,7 @@ class DecoratorGenerator extends Generator
                     ':parameters:' => $sourceClassName . ' $instance',
                 ])
             ],
-            $this->getClassMethods($reflection)
+            $sourceClassMethods
         );
 
         $result = $this->getResultClassString([
