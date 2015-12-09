@@ -29,6 +29,11 @@ PHP;
     }
 PHP;
 
+    protected $propertyTemplate = <<<'PHP'
+    :comment:
+    :modifiers: $:name::define:;
+PHP;
+
     /**
      * @param array $settings
      * @return bool
@@ -49,6 +54,16 @@ PHP;
         ];
 
         return strtr($this->methodTemplate, array_merge($default, $data));
+    }
+
+    protected function getResultPropertyString(array $data): string
+    {
+        static $default = [
+            ':comment:' => '',
+            ':define:' => '',
+        ];
+
+        return strtr($this->propertyTemplate, $result = array_merge($default, $data));
     }
 
     protected function getSourceClassName(string $class)
@@ -92,9 +107,16 @@ PHP;
                 ':name:' => $reflectionMethod->getName(),
                 ':parameters:' => join(', ', $parameters),
                 ':return:' => $resultType,
+                ':body:' => $this->getMethodBody($reflectionMethod)
             ]);
         }
+
         return $methods;
+    }
+
+    protected function getMethodBody(\ReflectionMethod $reflectionMethod)
+    {
+        return '/* TODO */';
     }
 
     protected function getMethodParameter(\ReflectionParameter $reflectionParameter)
