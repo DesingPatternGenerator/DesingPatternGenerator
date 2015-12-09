@@ -135,4 +135,23 @@ class DecoratorTest extends AbstractReflectionTest
             DecoratorGeneratorDecorator::class,
         ];
     }
+
+    /**
+     * @depends test
+     */
+    public function testInner()
+    {
+        $user = new User();
+        $decorator = new UserDecorator($user);
+
+        $id = 1;
+        $user->setId($id);
+        $this->assertSame($user->getId(), $id);
+        $this->assertSame($decorator->getId(), $id);
+
+        $id = 5;
+        $decorator->setId($id);
+        $this->assertSame($decorator->getId(), $id);
+        $this->assertSame($user->getId(), $id);
+    }
 }
