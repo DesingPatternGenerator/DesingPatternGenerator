@@ -23,26 +23,53 @@ class DecoratorGenerator extends Generator
         $sourceClassName = $reflection->getShortName();
         $resultClassName = $sourceClassName . 'Decorator';
 
-        $methods = array_merge(
-            [
-                $this->getResultMethodString([
-                    ':modifiers:' => 'public',
-                    ':name:' => '__construct',
-                    ':parameters:' => $sourceClassName . ' $instance',
-                ])
-            ],
-            $this->getClassMethods($reflection)
-        );
+        $sourceClassMethods = $this->getClassMethods($reflection);
+
+        if (empty($sourceClassMethods)) {
+            return false;
+        }
+
+        $body = [
+            $this->getResultPropertyString([
+                ':modifiers:' => 'private',
+                ':name:' => 'subject',
+            ]),
+
+            $this->getResultMethodString([
+                ':modifiers:' => 'public',
+                ':name:' => '__construct',
+                ':parameters:' => $sourceClassName . ' $subject',
+                ':body:' => '$this->subject = $subject;',
+            ])
+        ];
+
+        array_push($body, ...$sourceClassMethods);
 
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':use:' => "use $class;",
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
-            ':body:' => join(PHP_EOL, $methods),
+            ':body:' => join(PHP_EOL, $body),
         ]);
 
         $this->store($path, $resultClassName, $result);
 
         return true;
+    }
+
+    protected function getMethodBody(\ReflectionMethod $reflectionMethod)
+    {
+        static $template = 'return $this->subject->:method:(:paraeters:);';
+
+        $parameters = [];
+
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            $parameters[] = '$' . $reflectionParameter->getName();
+        }
+
+        return strtr($template, [
+            ':method:' => $reflectionMethod->getName(),
+            ':paraeters:' => join(', ', $parameters),
+        ]);
     }
 }

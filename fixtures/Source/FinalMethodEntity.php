@@ -8,4 +8,9 @@ class FinalMethodEntity
     {
 
     }
+
+    public function getName()
+    {
+
+    }
 }

@@ -33,6 +33,7 @@ use ReenExe\Fixtures\Result\Decorator\VariadicParameterClassDecorator;
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
 use ReenExe\Fixtures\Source\FinalClass;
+use ReenExe\Fixtures\Source\OnlyFinalMethodClass;
 
 class DecoratorTest extends AbstractReflectionTest
 {
@@ -77,6 +78,19 @@ class DecoratorTest extends AbstractReflectionTest
         $this->assertFalse(
             $generator->generate([
                 'class' => FinalClass::class,
+                'namespace' => 'ReenExe\Fixtures\Result\Decorator',
+                'path' => FIXTURE_RESULT_PATH . '/Decorator',
+            ])
+        );
+    }
+
+    public function testOnlyFinalMethods()
+    {
+        $generator = new DecoratorGenerator();
+
+        $this->assertFalse(
+            $generator->generate([
+                'class' => OnlyFinalMethodClass::class,
                 'namespace' => 'ReenExe\Fixtures\Result\Decorator',
                 'path' => FIXTURE_RESULT_PATH . '/Decorator',
             ])
@@ -134,5 +148,24 @@ class DecoratorTest extends AbstractReflectionTest
             DecoratorGenerator::class,
             DecoratorGeneratorDecorator::class,
         ];
+    }
+
+    /**
+     * @depends test
+     */
+    public function testInner()
+    {
+        $user = new User();
+        $decorator = new UserDecorator($user);
+
+        $id = 1;
+        $user->setId($id);
+        $this->assertSame($user->getId(), $id);
+        $this->assertSame($decorator->getId(), $id);
+
+        $id = 5;
+        $decorator->setId($id);
+        $this->assertSame($decorator->getId(), $id);
+        $this->assertSame($user->getId(), $id);
     }
 }
