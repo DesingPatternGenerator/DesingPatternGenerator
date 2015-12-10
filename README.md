@@ -6,4 +6,5 @@
 * Config in YAML
 * Write reflection core
 * NullObject
+* Composite
 * Factory Method
