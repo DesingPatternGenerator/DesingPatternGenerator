@@ -20,6 +20,10 @@ class DecoratorGenerator extends Generator
             return false;
         }
 
+        $this
+            ->clearUse()
+            ->addUseClass($class);
+
         $sourceClassName = $reflection->getShortName();
         $resultClassName = $sourceClassName . 'Decorator';
 
@@ -47,7 +51,6 @@ class DecoratorGenerator extends Generator
 
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
-            ':use:' => "use $class;",
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
             ':body:' => join(PHP_EOL, $body),
         ]);
@@ -59,7 +62,7 @@ class DecoratorGenerator extends Generator
 
     protected function getMethodBody(\ReflectionMethod $reflectionMethod)
     {
-        static $template = 'return $this->subject->:method:(:paraeters:);';
+        static $template = 'return $this->subject->:method:(:parameters:);';
 
         $parameters = [];
 
@@ -69,7 +72,7 @@ class DecoratorGenerator extends Generator
 
         return strtr($template, [
             ':method:' => $reflectionMethod->getName(),
-            ':paraeters:' => join(', ', $parameters),
+            ':parameters:' => join(', ', $parameters),
         ]);
     }
 }
