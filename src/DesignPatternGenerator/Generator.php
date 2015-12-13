@@ -34,6 +34,7 @@ PHP;
     :modifiers: $:name::define:;
 PHP;
 
+    protected $uses = [];
     /**
      * @param array $settings
      * @return bool
@@ -97,9 +98,20 @@ PHP;
                 $reflectionMethod->getParameters()
             );
 
-            $resultType = $reflectionMethod->getReturnType()
-                ? ":{$reflectionMethod->getReturnType()}"
-                : '';
+            $resultType = '';
+            if ($returnReflectionType = $reflectionMethod->getReturnType()) {
+
+                if ($returnReflectionType->isBuiltin()) {
+                    $resultType = ":{$returnReflectionType}";
+                } else {
+                    $returnClassName = (string)$returnReflectionType;
+                    $returnTypeReflectionClass = new \ReflectionClass($returnClassName);
+
+                    $this->addUseClass($returnClassName);
+
+                    $resultType = ":{$returnTypeReflectionClass->getShortName()}";
+                }
+            }
 
             $methods[] = $this->getResultMethodString([
                 ':comment:' => $reflectionMethod->getDocComment(),
@@ -174,6 +186,25 @@ PHP;
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
+    }
+
+    protected function clearUse()
+    {
+        $this->uses = [];
+
+        return $this;
+    }
+
+    protected function addUseClass(string $class)
+    {
+        $this->uses[$class] = "use $class;";
+
+        return $this;
+    }
+
+    protected function getUseString()
+    {
+        return join(PHP_EOL, $this->uses);
     }
 
     protected function getBehavior(\ReflectionClass $class)

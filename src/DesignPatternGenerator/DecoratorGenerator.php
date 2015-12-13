@@ -20,6 +20,10 @@ class DecoratorGenerator extends Generator
             return false;
         }
 
+        $this
+            ->clearUse()
+            ->addUseClass($class);
+
         $sourceClassName = $reflection->getShortName();
         $resultClassName = $sourceClassName . 'Decorator';
 
@@ -47,7 +51,7 @@ class DecoratorGenerator extends Generator
 
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
-            ':use:' => "use $class;",
+            ':use:' => $this->getUseString(),
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
             ':body:' => join(PHP_EOL, $body),
         ]);

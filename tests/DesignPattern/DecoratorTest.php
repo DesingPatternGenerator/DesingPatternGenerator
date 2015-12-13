@@ -30,8 +30,8 @@ use ReenExe\Fixtures\Result\Decorator\ParameterDefaultValueDecorator;
 use ReenExe\Fixtures\Source\VariadicParameterClass;
 use ReenExe\Fixtures\Result\Decorator\VariadicParameterClassDecorator;
 
-use ReenExe\Fixtures\Source\UserConstructionMethod;
-use ReenExe\Fixtures\Result\Decorator\UserConstructionMethodDecorator;
+use ReenExe\Fixtures\Source\MethodReturnClassType;
+use ReenExe\Fixtures\Result\Decorator\MethodReturnClassTypeDecorator;
 
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
@@ -148,8 +148,8 @@ class DecoratorTest extends AbstractReflectionTest
         ];
 
         yield [
-            UserConstructionMethod::class,
-            UserConstructionMethodDecorator::class,
+            MethodReturnClassType::class,
+            MethodReturnClassTypeDecorator::class,
         ];
 
         yield [
