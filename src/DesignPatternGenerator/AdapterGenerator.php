@@ -21,10 +21,10 @@ class AdapterGenerator extends Generator
         $adapterReflection = new \ReflectionClass($adapter);
         $adapterClassName = $adapterReflection->getShortName();
 
-        $use = join(PHP_EOL, [
-            "use $class;",
-            "use $adapter;",
-        ]);
+        $this
+            ->clearUse()
+            ->addUseClass($class)
+            ->addUseClass($adapter);
 
         $methods = array_merge(
             [
@@ -39,7 +39,6 @@ class AdapterGenerator extends Generator
 
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
-            ':use:' => $use,
             ':header:' => "class $resultClassName {$this->getBehavior($adapterReflection)} $adapterClassName",
             ':body:' => join(PHP_EOL, $methods),
         ]);

@@ -43,6 +43,8 @@ PHP;
 
     protected function getResultClassString(array $data): string
     {
+        $data[':use:'] = $this->getUseString();
+
         return strtr($this->classTemplate, $data);
     }
 
