@@ -62,7 +62,7 @@ class DecoratorGenerator extends Generator
 
     protected function getMethodBody(\ReflectionMethod $reflectionMethod)
     {
-        static $template = 'return $this->subject->:method:(:paraeters:);';
+        static $template = 'return $this->subject->:method:(:parameters:);';
 
         $parameters = [];
 
@@ -72,7 +72,7 @@ class DecoratorGenerator extends Generator
 
         return strtr($template, [
             ':method:' => $reflectionMethod->getName(),
-            ':paraeters:' => join(', ', $parameters),
+            ':parameters:' => join(', ', $parameters),
         ]);
     }
 }
