@@ -150,7 +150,7 @@ PHP;
             $settings[] = '...';
         }
 
-        $settings[] = $name = '$' . $reflectionParameter->getName();
+        $settings[] = '$' . $reflectionParameter->getName();
 
         $parameter = implode(' ', $settings);
 
