@@ -11,8 +11,6 @@ class DecoratorGenerator extends Generator
     public function generate(array $settings): bool
     {
         $class = $settings['class'];
-        $namespace = $settings['namespace'];
-        $path = $settings['path'];
 
         $reflection = new \ReflectionClass($class);
 
@@ -24,15 +22,13 @@ class DecoratorGenerator extends Generator
             ->clearUse()
             ->addUseClass($class);
 
-        $sourceClassName = $reflection->getShortName();
-        $resultClassName = $sourceClassName . 'Decorator';
-
         $sourceClassMethods = $this->getClassMethods($reflection);
 
         if (empty($sourceClassMethods)) {
             return false;
         }
 
+        $sourceClassName = $reflection->getShortName();
         $body = [
             $this->getResultPropertyString([
                 ':modifiers:' => 'private',
@@ -49,12 +45,15 @@ class DecoratorGenerator extends Generator
 
         array_push($body, ...$sourceClassMethods);
 
+        $resultClassName = $sourceClassName . 'Decorator';
+        $namespace = $settings['namespace'];
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
             ':body:' => join(PHP_EOL, $body),
         ]);
 
+        $path = $settings['path'];
         $this->store($path, $resultClassName, $result);
 
         return true;
