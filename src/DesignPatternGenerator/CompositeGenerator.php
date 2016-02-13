@@ -29,6 +29,14 @@ class CompositeGenerator extends Generator
         $path = $settings['path'];
         $resultClassName = $sourceClassName . 'Composite';
 
+        $body = [
+            $this->getResultPropertyString([
+                ':comment:' => $this->getElementListTypeHint($sourceClassName),
+                ':modifiers:' => 'private',
+                ':name:' => 'elements',
+            ]),
+        ];
+
         $methods = $this->getClassMethods($reflection);
 
         $compositeMethodList = $settings['methods'] ?? [];
@@ -37,16 +45,39 @@ class CompositeGenerator extends Generator
             ':modifiers:' => 'public',
             ':name:' => $addElementMethodName,
             ':parameters:' => $sourceClassName . ' $element',
+            ':body:' => '$this->elements[] = $element;'
         ]);
 
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
-            ':body:' => join(PHP_EOL, $methods),
+            ':body:' => join(PHP_EOL, array_merge($body, $methods)),
         ]);
 
         $this->store($path, $resultClassName, $result);
 
         return true;
+    }
+
+    protected function getMethodBody(\ReflectionMethod $reflectionMethod)
+    {
+        $each =  <<<'PHP'
+
+        foreach ($this->elements as $element) {
+            $element->%s();
+        }
+
+PHP;
+        return sprintf($each, $reflectionMethod->getName());
+    }
+
+    private function getElementListTypeHint($class)
+    {
+        return <<<COMMENT
+
+    /**
+     * @var {$class}[]|array
+     */
+COMMENT;
     }
 }

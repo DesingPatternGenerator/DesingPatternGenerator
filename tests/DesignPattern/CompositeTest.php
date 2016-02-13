@@ -32,7 +32,14 @@ class CompositeTest extends AbstractReflectionTest
         /* @var $composite ViewInterfaceComposite|ViewComposite */
         $composite = new $compositeClass();
 
-        $view = $this->getMockBuilder($sourceClassName)->getMock();
+        $mockBuilder = $this->getMockBuilder($sourceClassName);
+        $view = $mockBuilder->getMock();
+        $view->expects($this->exactly(2))->method('render');
+
+        $composite->add($view);
+        $composite->render();
+
+        $view = $mockBuilder->getMock();
         $view->expects($this->exactly(1))->method('render');
 
         $composite->add($view);
