@@ -22,19 +22,32 @@ class CompositeTest extends AbstractReflectionTest
         $this->generator = new CompositeGenerator();
     }
 
-    public function testViewComposite()
+    /**
+     * @dataProvider viewDataProvider
+     * @param $sourceClassName
+     */
+    public function testViewComposite($sourceClassName, $compositeClass)
     {
-        $this->assertTrue($this->generate(View::class));
+        $this->assertTrue($this->generate($sourceClassName));
+        /* @var $composite ViewInterfaceComposite|ViewComposite */
+        $composite = new $compositeClass();
+
+        $view = $this->getMockBuilder($sourceClassName)->getMock();
+        $view->expects($this->exactly(1))->method('render');
+
+        $composite->add($view);
+        $composite->render();
     }
 
-    public function testViewInterfaceComposite()
+    public function viewDataProvider()
     {
-        $this->assertTrue($this->generate(ViewInterface::class));
+        yield [View::class, ViewComposite::class];
+        yield [ViewInterface::class, ViewInterfaceComposite::class];
     }
 
     private function generate($sourceClassName)
     {
-        $this->generator->generate([
+        return $this->generator->generate([
             'class' => $sourceClassName,
             'namespace' => 'ReenExe\Fixtures\Result\Composite',
             'path' => FIXTURE_RESULT_PATH . '/Composite',
