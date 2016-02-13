@@ -7,5 +7,5 @@
 * Config in YAML
 * Write reflection core
 * NullObject
-* Composite
+* Composite (getChild(), remove())
 * Factory Method
