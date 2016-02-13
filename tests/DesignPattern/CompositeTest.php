@@ -12,9 +12,8 @@ class CompositeTest extends AbstractReflectionTest
     /**
      * @dataProvider dataProvider
      * @param $sourceClassName
-     * @param array $methods
      */
-    public function test($sourceClassName, array $methods)
+    public function testViewComposite($sourceClassName)
     {
         $generator = new CompositeGenerator();
 
@@ -22,24 +21,19 @@ class CompositeTest extends AbstractReflectionTest
             'class' => $sourceClassName,
             'namespace' => 'ReenExe\Fixtures\Result\Composite',
             'path' => FIXTURE_RESULT_PATH . '/Composite',
-            'methods' => $methods
         ]);
     }
 
     public function dataProvider()
     {
-        $methods = ['add'];
+        $methods = [];
 
         yield [
-            View::class,
-            $methods,
+            View::class
         ];
 
-        $methods = ['add'];
-
         yield [
-            ViewInterface::class,
-            $methods,
+            ViewInterface::class
         ];
     }
 }

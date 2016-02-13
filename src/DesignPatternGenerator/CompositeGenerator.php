@@ -31,6 +31,14 @@ class CompositeGenerator extends Generator
 
         $methods = $this->getClassMethods($reflection);
 
+        $compositeMethodList = $settings['methods'] ?? [];
+        $addElementMethodName = $compositeMethodList['add'] ?? 'add';
+        $methods[] = $this->getResultMethodString([
+            ':modifiers:' => 'public',
+            ':name:' => $addElementMethodName,
+            ':parameters:' => $sourceClassName . ' $element',
+        ]);
+
         $result = $this->getResultClassString([
             ':namespace:' => "namespace $namespace;",
             ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
