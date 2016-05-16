@@ -13,5 +13,7 @@ class NullObjectGenerator extends Generator
         if ($reflection->isFinal()) {
             return false;
         }
+
+        return true;
     }
 }
