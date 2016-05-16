@@ -14,6 +14,23 @@ class NullObjectGenerator extends Generator
             return false;
         }
 
+        $this
+            ->clearUse()
+            ->addUseClass($class);
+
+        $sourceClassName = $reflection->getShortName();
+        $resultClassName = 'Null' . $sourceClassName;
+        $methods = $this->getClassMethods($reflection);
+        $namespace = $settings['namespace'];
+        $result = $this->getResultClassString([
+            ':namespace:' => "namespace $namespace;",
+            ':header:' => "class $resultClassName {$this->getBehavior($reflection)} $sourceClassName",
+            ':body:' => join(PHP_EOL, $methods),
+        ]);
+
+        $path = $settings['path'];
+        $this->store($path, $resultClassName, $result);
+
         return true;
     }
 }

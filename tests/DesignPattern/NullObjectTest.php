@@ -5,7 +5,7 @@ namespace ReenExe\Tests\DesignPattern;
 use ReenExe\DesignPatternGenerator\NullObjectGenerator;
 
 use ReenExe\Fixtures\Source\ViewInterface;
-use ReenExe\Fixtures\Result\NullObject\NullObjectViewInterface;
+use ReenExe\Fixtures\Result\NullObject\NullViewInterface;
 
 class NullObjectTestCommon extends AbstractCommonReflectionTest
 {
@@ -21,7 +21,7 @@ class NullObjectTestCommon extends AbstractCommonReflectionTest
             ])
         );
 
-        $this->assertTrue(class_exists(NullObjectViewInterface::class));
+        $this->assertTrue(class_exists(NullViewInterface::class));
     }
 
     public function testFinalClass()
