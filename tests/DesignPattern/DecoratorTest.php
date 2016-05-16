@@ -81,8 +81,6 @@ class DecoratorTest extends AbstractReflectionTest
         $this->assertFalse(
             $generator->generate([
                 'class' => FinalClass::class,
-                'namespace' => 'ReenExe\Fixtures\Result\Decorator',
-                'path' => FIXTURE_RESULT_PATH . '/Decorator',
             ])
         );
     }

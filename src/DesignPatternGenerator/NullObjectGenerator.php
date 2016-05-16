@@ -6,6 +6,12 @@ class NullObjectGenerator extends Generator
 {
     public function generate(array $settings): bool
     {
-        // TODO: Implement generate() method.
+        $class = $settings['class'];
+
+        $reflection = new \ReflectionClass($class);
+
+        if ($reflection->isFinal()) {
+            return false;
+        }
     }
 }
