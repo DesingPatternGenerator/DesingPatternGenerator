@@ -10,7 +10,7 @@ use ReenExe\Fixtures\Source\ViewInterface;
 use ReenExe\Fixtures\Result\Composite\ViewComposite;
 use ReenExe\Fixtures\Result\Composite\ViewInterfaceComposite;
 
-class CompositeTest extends AbstractReflectionTest
+class CompositeTestCommon extends AbstractCommonReflectionTest
 {
     /**
      * @var CompositeGenerator

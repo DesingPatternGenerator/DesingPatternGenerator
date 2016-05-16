@@ -2,13 +2,16 @@
 
 namespace ReenExe\Tests\DesignPattern;
 
+use ReenExe\DesignPatternGenerator\Generator;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionType;
 use PHPUnit_Framework_TestCase;
 
-abstract class AbstractReflectionTest extends PHPUnit_Framework_TestCase
+use ReenExe\Fixtures\Source\FinalClass;
+
+abstract class AbstractCommonReflectionTest extends PHPUnit_Framework_TestCase
 {
     protected function assertConstructorType(ReflectionClass $reflectionResultClass, $sourceClassName)
     {
@@ -141,6 +144,15 @@ abstract class AbstractReflectionTest extends PHPUnit_Framework_TestCase
             ($source === null && $expected === null)
             ||
             ((string)$source === (string)$expected)
+        );
+    }
+
+    protected function assetFalseFinalClassGenerate(Generator $generator)
+    {
+        $this->assertFalse(
+            $generator->generate([
+                'class' => FinalClass::class
+            ])
         );
     }
 

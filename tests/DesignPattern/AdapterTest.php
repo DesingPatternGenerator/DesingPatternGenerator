@@ -8,7 +8,7 @@ use ReenExe\Fixtures\Source\UserRepository;
 use ReenExe\Fixtures\Source\Adapter\PagerAdapter;
 use ReenExe\Fixtures\Result\Adapter\UserRepositoryAdapter;
 
-class AdapterTest extends AbstractReflectionTest
+class AdapterTestCommon extends AbstractCommonReflectionTest
 {
     /**
      * @dataProvider dataProvider

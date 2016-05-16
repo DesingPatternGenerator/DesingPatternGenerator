@@ -3,18 +3,11 @@
 namespace ReenExe\Tests\DesignPattern;
 
 use ReenExe\DesignPatternGenerator\NullObjectGenerator;
-use ReenExe\Fixtures\Source\FinalClass;
 
-class NullObjectTest extends AbstractReflectionTest
+class NullObjectTestCommon extends AbstractCommonReflectionTest
 {
     public function testFinalClass()
     {
-        $generator = new NullObjectGenerator();
-
-        $this->assertFalse(
-            $generator->generate([
-                'class' => FinalClass::class
-            ])
-        );
+        $this->assetFalseFinalClassGenerate(new NullObjectGenerator());
     }
 }

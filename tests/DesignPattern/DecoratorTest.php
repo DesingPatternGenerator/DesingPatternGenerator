@@ -35,10 +35,9 @@ use ReenExe\Fixtures\Result\Decorator\MethodReturnClassTypeDecorator;
 
 use ReenExe\Fixtures\Result\Decorator\DecoratorGeneratorDecorator;
 
-use ReenExe\Fixtures\Source\FinalClass;
 use ReenExe\Fixtures\Source\OnlyFinalMethodClass;
 
-class DecoratorTest extends AbstractReflectionTest
+class DecoratorTestCommon extends AbstractCommonReflectionTest
 {
     /**
      * @dataProvider dataProvider
@@ -76,13 +75,7 @@ class DecoratorTest extends AbstractReflectionTest
 
     public function testFinalClass()
     {
-        $generator = new DecoratorGenerator();
-
-        $this->assertFalse(
-            $generator->generate([
-                'class' => FinalClass::class,
-            ])
-        );
+        $this->assetFalseFinalClassGenerate(new DecoratorGenerator());
     }
 
     public function testOnlyFinalMethods()
