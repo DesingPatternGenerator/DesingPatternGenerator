@@ -6,8 +6,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ReenExe\\Fixtures\\": "fixtures",
             "ReenExe\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ReenExe\\Fixtures\\": "fixtures"
         }
     },
     "require": {
