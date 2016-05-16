@@ -20,6 +20,8 @@ class NullObjectTestCommon extends AbstractCommonReflectionTest
                 'path' => FIXTURE_RESULT_PATH . '/NullObject',
             ])
         );
+
+        $this->assertTrue(class_exists(NullObjectViewInterface::class));
     }
 
     public function testFinalClass()
